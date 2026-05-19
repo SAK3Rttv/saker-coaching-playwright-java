@@ -44,6 +44,7 @@ public class ExcelUtil {
 	
 	@DataProvider(name = "loginDataProvider")
 	public static Object[][] loginDataProvider() throws IOException, InvalidFormatException {
+		System.out.println("e1");
 		List<Object[]> rows = new ArrayList<>();
 		try (FileInputStream fis = new FileInputStream(EXCEL_PATH); Workbook workbook = WorkbookFactory.create(fis)) {
 			Sheet sheet = workbook.getSheetAt(0);
@@ -67,6 +68,7 @@ public class ExcelUtil {
 
 				rows.add(new Object[] { testCaseId, category, description, email, password, rememberMe, expected,
 						errorHint, notes });
+				System.out.println("e2");
 			}
 		}
 		return rows.toArray(new Object[0][]);

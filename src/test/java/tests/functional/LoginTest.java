@@ -3,7 +3,10 @@ package tests.functional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.AriaRole;
+import com.microsoft.playwright.options.WaitForSelectorState;
 
 import base.BaseTest;
 import pages.HomePage;
@@ -15,6 +18,7 @@ import utils.WaitUtil;
 public class LoginTest extends BaseTest {
 
 //	@DataProvider(name = "loginDataProvider")
+	public static int debuger = 1000;
 
 	@Test(dataProvider = "loginDataProvider", dataProviderClass = ExcelUtil.class, description = "Data-driven login - covers Positive / Negative / Edge / Security")
 	public void loginTest(String testCaseId, String category, String description, String email, String password,
@@ -28,13 +32,17 @@ public class LoginTest extends BaseTest {
 		getTest().info("Expected    : " + expectedResult);
 		if (!notes.isEmpty())
 			getTest().info("Notes       : " + notes);
-
+		System.out.println("6");
+		System.out.println(debuger++);
 		// Navigate & open login modal
 		goHome();
+		System.out.println("50");
 		HomePage home = new HomePage(page);
+		System.out.println("51");
 		home.clickSignInNavButton();
-
+		System.out.println("52");
 		LoginPage loginPage = new LoginPage(page);
+		System.out.println("7");
 		WaitUtil.waitForVisible(page.locator("#email").first());
 
 		// Perform login
@@ -44,7 +52,7 @@ public class LoginTest extends BaseTest {
 			getTest().fail("Unexpected dialog fired: " + dialog.message());
 			dialog.dismiss();
 		});
-
+		System.out.println("8");
 		try {
 			if (rememberMe) {
 				loginPage.loginWithRememberMe(email, password);
@@ -54,17 +62,39 @@ public class LoginTest extends BaseTest {
 		} catch (Exception e) {
 			getTest().info("Login action threw expception: " + e.getMessage());
 		}
-
-		WaitUtil.sleep(5000);
+		System.out.println("9");
+//		WaitUtil.sleep(5000);
 		
 //		WaitUtil.waitForVisible(page.locator("#email").first());
-
-		// Evaluate outcome
-		NavbarComponent nav = new NavbarComponent(page);
-		boolean loggedIn = nav.isLoggedIn();
-		boolean hasError = loginPage.isErrorMessageVisible();
-		boolean formOpen = loginPage.isSignInButtonVisiable();
+		Locator loading = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Signing In..."));
+		WaitUtil.waitForHidden(loading);
+//		Locator loading = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign In"));
 		
+//		Waitfor
+//		Sign In
+//		System.out.println("loading " + loading.ariaSnapshot());
+//		System.out.println("before wait hidden: visiable " + loading.isVisible());
+//		WaitUtil.sleep(3000);
+//		loading.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE));
+//		WaitUtil.waitForVisible(loading);
+//		WaitUtil.waitForHidden(loading);
+//		System.out.println("after wait hidden: visiable " + loading.isVisible());
+//		WaitUtil.waitForVisible(loading);
+//		System.out.println("after wait visible: visiable " + loading.isVisible());
+//		WaitUtil.sleep(3000);
+		// Evaluate outcome
+		
+		WaitUtil.sleep(3000);
+		
+		NavbarComponent nav = new NavbarComponent(page);
+		System.out.println("9.1");
+//		boolean loggedIn = waitForLoginOutcome(loginPage,nav);
+		boolean loggedIn = nav.isLoggedIn();
+		System.out.println("9.2");
+		boolean hasError = loginPage.isErrorMessageVisible();
+		System.out.println("9.3");
+		boolean formOpen = loginPage.isSignInButtonVisiable();
+		System.out.println("10");
 //		page.waitForCondition(() -> 
 //		nav.isLoggedIn() || loginPage.isErrorMessageVisible(),
 //		new Page.WaitForConditionOptions().setTimeout(10000)
@@ -89,6 +119,7 @@ public class LoginTest extends BaseTest {
 		default:
 			Assert.fail("Unknown ExpectedResult value in Excel: " + expectedResult);
 		}
+		System.out.println("11");
 		
 		// Category-specific extra checks
 		if("Security".equalsIgnoreCase(category)) {
@@ -99,7 +130,19 @@ public class LoginTest extends BaseTest {
 		if("Edge".equalsIgnoreCase(category)) {
 			assertPageStable();
 		}
+		System.out.println("12");
 	}
+	
+//	private boolean waitForLoginOutcome(LoginPage loginPage, NavbarComponent nav) {
+//		try {
+//			page.waitForCondition(() -> nav.isLoggedIn() || loginPage.isErrorMessageVisible(),
+//					new Page.WaitForConditionOptions().setTimeout(15000));
+//			return nav.isLoggedIn();
+//		} catch (TimeoutError e) {
+//			getTest().warning("Login outcome did not resolve within 15s");
+//			return false;
+//		}
+//	}
 	
 	private void assertSuccess(boolean loggedIn, String id, String email) {
 		if (loggedIn) {

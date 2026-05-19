@@ -31,7 +31,8 @@ public class HomePage {
 	/* Navigation */
 	public void navigate() {
 		page.navigate(ConfigReader.get("base.url"),
-				new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
+				new Page.NavigateOptions().setWaitUntil(WaitUntilState.NETWORKIDLE)
+				.setTimeout(30000));
 	}
 
 	/*
