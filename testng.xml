@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<!-- 
+	SAK3R Coaching - Playwright Automation Suite
+	____________________________________________
+	Run all suites : mvn test
+	Run one class : mvn test -Dtest=SmokeTests
+	Run one method : mvn test -Dtest=SmokeTests#homepageLoads
+-->
+<suite name="SAK3R-Coaching-Suite" verbose="1" parallel="none">
+
+	<!-- Listeners -->
+	<listeners>
+		<listener class-name="listeners.TestListener" />
+	</listeners>
+
+	<test name="02 - Auth Functional Tests">
+		<classes>
+			<!--class name="tests.functional.AuthTests" /-->
+			<class name="tests.functional.LoginTest"></class>
+		</classes>
+	</test>
+
+<!-- -->
+</suite>
