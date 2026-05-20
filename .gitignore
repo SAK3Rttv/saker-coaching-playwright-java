@@ -3,5 +3,5 @@
 .project
 /test-output/
 .settings
-config.properties
+Config.properties
 
