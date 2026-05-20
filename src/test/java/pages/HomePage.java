@@ -24,8 +24,8 @@ public class HomePage {
 		this.page = page;
 
 		// Navbar
-		logInNavBtn = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login"));
-
+//		logInNavBtn = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login").setExact(true));
+		logInNavBtn = page.locator("button:has-text('Login')");
 	}
 
 	/* Navigation */
