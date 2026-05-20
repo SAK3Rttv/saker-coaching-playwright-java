@@ -27,7 +27,7 @@ public class ExcelUtil {
 		int rowCount = sheet.getLastRowNum();
 		Object[][] data = new Object[rowCount][2];
 
-		for (int i = 0; i < rowCount; i++) {
+		for (int i = 1; i < rowCount; i++) {
 			Row row = sheet.getRow(i + 1);
 
 			String email = getCellValue(row, 0);
@@ -50,7 +50,7 @@ public class ExcelUtil {
 			Sheet sheet = workbook.getSheetAt(0);
 			int lastRow = sheet.getLastRowNum();
 
-//			for (int i = 1; i <= lastRow; i++) {
+//			for (int i = 1; i < lastRow; i++) {
 			for (int i = 1; i < lastRow; i++) {
 				Row row = sheet.getRow(i);
 				if (row == null)
@@ -68,7 +68,6 @@ public class ExcelUtil {
 
 				rows.add(new Object[] { testCaseId, category, description, email, password, rememberMe, expected,
 						errorHint, notes });
-				System.out.println("e2");
 			}
 		}
 		return rows.toArray(new Object[0][]);

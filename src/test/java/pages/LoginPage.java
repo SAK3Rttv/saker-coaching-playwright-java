@@ -29,6 +29,7 @@ public class LoginPage {
 	private final Locator errorMessage;
 	private final Locator successToast;
 	private final Locator resendVerificationBtn;
+	private final Locator emptyField;
 
 	public LoginPage(Page page) {
 		this.page = page;
@@ -38,9 +39,14 @@ public class LoginPage {
 		rememberMeCheckbox = page.getByLabel("Remember me", new Page.GetByLabelOptions().setExact(true));
 		SignInButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign In"));
 		
-		errorMessage = page.locator(".error-message, [role='alert'], .toast-error").first();
+//		errorMessage = page.locator(".error-message, [role='alert'], .toast-error").first();
+		
+		errorMessage = page.getByRole(AriaRole.LISTITEM).filter(new Locator.FilterOptions().setHasText("Invalid credentials"));
+//		errorMessage = page.getByRole(AriaRole.LISTITEM);
+		
 		successToast = page.locator(".toast-success, .Toastify__toast--success").first();
 		resendVerificationBtn = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Resend"));
+		emptyField = page.getByText("Please fill out this field.");
 		
 	}
 
@@ -100,10 +106,26 @@ public class LoginPage {
 	}
 	
 	public boolean isErrorMessageVisible() {
+//		try {
+//			return errorMessage.count() > 0 && errorMessage.isVisible();
+//		} catch (Exception e) {
+//			return false;
+//		}
+//		Locator test = page.getByRole(AriaRole.LISTITEM).filter(new Locator.FilterOptions().setHasText("No refresh token"));
+//		System.out.println(test.ariaSnapshot());
+//		System.out.println(test.innerHTML());
 		return errorMessage.isVisible();
 	}
 	
 	public String getErrorMessageText() {
+		if (!errorMessage.isVisible()) {
+			return "not";
+		}
+//		return "done";
+		System.out.println("errorMessage.ariaSnapshot() "  + errorMessage.ariaSnapshot());
+		System.out.println("errorMessage.innerHTML() "  + errorMessage.innerHTML());
+		System.out.println("errorMessage.textContent() "  + errorMessage.textContent());
+		System.out.println("errorMessage.textContent().trim() "  + errorMessage.textContent().trim());
 		return errorMessage.textContent().trim();
 	}
 	
@@ -111,8 +133,8 @@ public class LoginPage {
 		return resendVerificationBtn.isVisible();
 	}
 	
-	// Some getter for locator
-	public Locator errorMsgLocator() {
-		return errorMessage;
+	public boolean isThereEmptyField() {
+		return emptyField.isVisible();
 	}
+	
 }

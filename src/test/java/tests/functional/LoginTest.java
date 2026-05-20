@@ -15,35 +15,43 @@ import utils.ExcelUtil;
 import utils.WaitUtil;
 
 public class LoginTest extends BaseTest {
-
+    private static int counter = 1000;
 
 	@Test(dataProvider = "loginDataProvider", dataProviderClass = ExcelUtil.class, description = "Data-driven login - covers Positive / Negative / Edge / Security")
 	public void loginTest(String testCaseId, String category, String description, String email, String password,
 			boolean rememberMe, String expectedResult, String expectedErrorContains, String notes) {
 		logTestMetadata(testCaseId, category, description, email, rememberMe, expectedResult, notes);
-		
+		System.out.println(counter++);
+		System.out.println("1");
 		// 1. Setup & Navigation
 		navigateToLoginPage();
 		LoginPage loginPage = new LoginPage(page);
 		NavbarComponent nav = new NavbarComponent(page);
 		
-		
+		System.out.println("2");
 		// 2. Execution
 		handleUnexpectedDialogs();
+		System.out.println("2.1");
 		performLoginAction(loginPage, email, password, rememberMe);
-		waitForLoginProcessToComplete();
+		System.out.println("2.2");
+		waitForLoginProcessToComplete(category);
+		System.out.println("2.3");
 		
+		System.out.println("3");
 		// 3. Capture State
 		boolean loggedIn = nav.isLoggedIn();
+		System.out.println("3.1");
 		boolean hasError = loginPage.isErrorMessageVisible();
+		System.out.println("55 "  + loginPage.getErrorMessageText());
 		boolean formOpen = loginPage.isSignInButtonVisiable();
 		
 		getTest().info("Final State -> Logged in: " + loggedIn + ", Error shown: " + hasError);
 	
-	
+		System.out.println("4");
 	   // 4. Verification Logic
 		verifyResults(expectedResult, loggedIn, hasError, formOpen, testCaseId, email, expectedErrorContains, loginPage, rememberMe,category);
 	    verifyCategorySpecifics(category, loggedIn, testCaseId);
+	    System.out.println("5");
 	}
 	
 	private void navigateToLoginPage() {
@@ -64,10 +72,41 @@ public class LoginTest extends BaseTest {
 		}
 	}
 	
-	private void waitForLoginProcessToComplete() {
+//	private void waitForLoginProcessToComplete(LoginPage loginPage, NavbarComponent nav) {
+//	    try {
+//	    	
+//	    	System.out.println("nav.isLoggedIn()  " + nav.isLoggedIn() );
+//	    	System.out.println("loginPage.isErrorMessageVisible()   " + loginPage.isErrorMessageVisible()  );
+//	    	System.out.println("loginPage.isErrorMessageVisible()   " + loginPage.isErrorMessageVisible()  );
+//	        page.waitForCondition(
+//	            () -> nav.isLoggedIn() 
+//	            ||
+//	            loginPage.isErrorMessageVisible() 
+//	            || 
+//	            loginPage.isResendVerificationVisible(),
+//	            new Page.WaitForConditionOptions().setTimeout(15000)
+//	        );
+//	    } catch (TimeoutError e) {
+//	        getTest().warning("Login outcome not resolved within 15s — proceeding with current state");
+//	    }
+//	}
+	private void waitForLoginProcessToComplete(String cat) {
+		System.out.println("f1");
 		Locator loading = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Signing In..."));
+		System.out.println("f2");
 		WaitUtil.waitForHidden(loading);
-		WaitUtil.sleep(3000);
+		System.out.println("f3");
+		
+		if (cat.equalsIgnoreCase("Positive")) {
+			System.out.println("f4");
+			WaitUtil.waitForVisible(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Notifications")));
+			System.out.println("f5");
+		} else {
+			System.out.println("f6");
+			WaitUtil.waitForVisible(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign In")));
+			System.out.println("f7");
+		}
+//		WaitUtil.sleep(3000);
 	}
 	
 	private void verifyResults(String expectedResult, boolean loggedIn, boolean hasError, boolean formOpen,
@@ -127,7 +166,7 @@ public class LoginTest extends BaseTest {
 		}
 
 		// Verify some failure signal is present
-		boolean failureSignalPresent = hasError || formOpen || loginPage.isResendVerificationVisible();
+		boolean failureSignalPresent = hasError || formOpen || loginPage.isResendVerificationVisible() || loginPage.isThereEmptyField();
 
 		Assert.assertTrue(failureSignalPresent,
 				"[" + id + "] Expected a failure signal (error message or form still open) for: " + email);
