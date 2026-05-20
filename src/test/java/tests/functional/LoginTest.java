@@ -63,7 +63,7 @@ public class LoginTest extends BaseTest {
 		System.out.println("nv 2");
 		new HomePage(page).clickSignInNavButton();
 		System.out.println("nv 3");
-		WaitUtil.waitForVisible(page.locator("#email").first());
+//		WaitUtil.waitForVisible(page.locator("#email").first());
 		System.out.println("nv 4");
 	}
 	
@@ -99,10 +99,20 @@ public class LoginTest extends BaseTest {
 //	}
 	private void waitForLoginProcessToComplete(String cat) {
 		System.out.println("f1");
-		Locator loading = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Signing In..."));
+//		Locator loading = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Signing In..."));
+		Locator loading = page.locator("button:has-text('Signing In...')");
 		System.out.println("f2");
 		loading.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.HIDDEN).setTimeout(30000));
-//		WaitUtil.waitForHidden(loading);
+
+		
+		
+		
+		
+		
+		
+		
+		
+		//		WaitUtil.waitForHidden(loading);
 		System.out.println("f3");
 		
 		if (cat.equalsIgnoreCase("Positive")) {
