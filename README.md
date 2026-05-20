@@ -1,4 +1,4 @@
-# SAK3R Coaching — Playwright Java Test Automation
+# SAK3R Coaching - Playwright Java Test Automation
 
 ![Java](https://img.shields.io/badge/Java-17-orange?logo=java)
 ![Playwright](https://img.shields.io/badge/Playwright-Java-brightgreen?logo=playwright)
@@ -43,7 +43,7 @@ src/test/java/
 │   ├── security/
 │   └── e2e/
 └── utils/
-    ├── WaitUtil.java          # Smart wait helpers — no Thread.sleep()
+    ├── WaitUtil.java          # Smart wait helpers - no Thread.sleep()
     ├── ExcelUtil.java         # Apache POI Excel data provider
     ├── ExtentManager.java     # Singleton ExtentReports instance
     └── ScreenshotUtil.java    # Auto screenshot on failure
@@ -57,7 +57,7 @@ src/test/resources/
 
 ## Test Coverage
 
-### Login Feature — 29 Data-Driven Test Cases
+### Login Feature - 29 Data-Driven Test Cases
 
 | Category | Count | What's Tested |
 |----------|-------|---------------|
@@ -108,7 +108,7 @@ timeout.default    = 15000
 timeout.navigation = 30000
 timeout.element    = 15000
 
-# Test credentials — replace with real accounts
+# Test credentials - replace with real accounts
 user.email    = your@email.com
 user.password = yourpassword
 
@@ -151,13 +151,13 @@ Open `SAK3R-ExtentReport.html` in any browser to view results.
 
 ## Key Design Decisions
 
-**No `Thread.sleep()`** — all waits use Playwright's `waitForCondition` and `waitFor` with explicit conditions, making tests fast on fast environments and reliable on slow ones.
+**No `Thread.sleep()`** - all waits use Playwright's `waitForCondition` and `waitFor` with explicit conditions, making tests fast on fast environments and reliable on slow ones.
 
-**Isolated browser context per test** — each test gets a fresh `BrowserContext` with cleared cookies and localStorage, preventing session bleed between tests.
+**Isolated browser context per test** - each test gets a fresh `BrowserContext` with cleared cookies and localStorage, preventing session bleed between tests.
 
-**Security payload masking** — XSS and injection payloads are masked in reports (`*** [security payload — masked] ***`) to prevent report-level XSS execution.
+**Security payload masking** - XSS and injection payloads are masked in reports (`*** [security payload - masked] ***`) to prevent report-level XSS execution.
 
-**Config-driven** — browser, timeouts, credentials, and URLs are all externalized in `Config.properties`, no hardcoded values in test code.
+**Config-driven** - browser, timeouts, credentials, and URLs are all externalized in `Config.properties`, no hardcoded values in test code.
 
 ---
 
