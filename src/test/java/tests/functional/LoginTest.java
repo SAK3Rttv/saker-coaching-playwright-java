@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import com.microsoft.playwright.options.WaitForSelectorState;
 
 import base.BaseTest;
 import pages.HomePage;
@@ -25,7 +26,9 @@ public class LoginTest extends BaseTest {
 		System.out.println("1");
 		// 1. Setup & Navigation
 		navigateToLoginPage();
+		System.out.println("1.1");
 		LoginPage loginPage = new LoginPage(page);
+		System.out.println("1.2");
 		NavbarComponent nav = new NavbarComponent(page);
 		
 		System.out.println("2");
@@ -55,9 +58,13 @@ public class LoginTest extends BaseTest {
 	}
 	
 	private void navigateToLoginPage() {
+		System.out.println("nv 1");
 		goHome();
+		System.out.println("nv 2");
 		new HomePage(page).clickSignInNavButton();
+		System.out.println("nv 3");
 		WaitUtil.waitForVisible(page.locator("#email").first());
+		System.out.println("nv 4");
 	}
 	
 	private void performLoginAction(LoginPage loginPage,String email,String password,boolean rememberMe) {
@@ -94,7 +101,8 @@ public class LoginTest extends BaseTest {
 		System.out.println("f1");
 		Locator loading = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Signing In..."));
 		System.out.println("f2");
-		WaitUtil.waitForHidden(loading);
+		loading.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.HIDDEN).setTimeout(30000));
+//		WaitUtil.waitForHidden(loading);
 		System.out.println("f3");
 		
 		if (cat.equalsIgnoreCase("Positive")) {

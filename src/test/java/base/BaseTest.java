@@ -12,6 +12,9 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.options.AriaRole;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 import config.ConfigReader;
 import listeners.TestListener;
@@ -80,8 +83,15 @@ public class BaseTest {
 	/**
 	 * Navigate to the base URL.
 	 */
+//	protected void goHome() {
+//		page.navigate(ConfigReader.get("base.url"), new Page.NavigateOptions()
+//				.setWaitUntil(com.microsoft.playwright.options.WaitUntilState.DOMCONTENTLOADED));
+//	}
+	
 	protected void goHome() {
 		page.navigate(ConfigReader.get("base.url"), new Page.NavigateOptions()
-				.setWaitUntil(com.microsoft.playwright.options.WaitUntilState.DOMCONTENTLOADED));
+				.setWaitUntil(com.microsoft.playwright.options.WaitUntilState.COMMIT));
+	
+//	  assertThat(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login"))).isVisible();
 	}
 }
