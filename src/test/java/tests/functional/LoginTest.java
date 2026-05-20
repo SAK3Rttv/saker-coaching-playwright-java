@@ -16,96 +16,111 @@ import utils.WaitUtil;
 
 public class LoginTest extends BaseTest {
 
-//	@DataProvider(name = "loginDataProvider")
-	public static int debuger = 1000;
 
 	@Test(dataProvider = "loginDataProvider", dataProviderClass = ExcelUtil.class, description = "Data-driven login - covers Positive / Negative / Edge / Security")
 	public void loginTest(String testCaseId, String category, String description, String email, String password,
 			boolean rememberMe, String expectedResult, String expectedErrorContains, String notes) {
-		getTest().info("__________________________________________");
-		getTest().info("TestCase    : " + testCaseId);
-		getTest().info("Category    : " + category);
-		getTest().info("Description : " + description);
-		getTest().info("Email       : " + email);
-		getTest().info("RememberMe  : " + rememberMe);
-		getTest().info("Expected    : " + expectedResult);
-		if (!notes.isEmpty())
-			getTest().info("Notes       : " + notes);
-
-		// Navigate & open login modal
-		goHome();
-		HomePage home = new HomePage(page);
-		home.clickSignInNavButton();
+		logTestMetadata(testCaseId, category, description, email, rememberMe, expectedResult, notes);
+		
+		// 1. Setup & Navigation
+		navigateToLoginPage();
 		LoginPage loginPage = new LoginPage(page);
+		NavbarComponent nav = new NavbarComponent(page);
+		
+		
+		// 2. Execution
+		handleUnexpectedDialogs();
+		performLoginAction(loginPage, email, password, rememberMe);
+		waitForLoginProcessToComplete();
+		
+		// 3. Capture State
+		boolean loggedIn = nav.isLoggedIn();
+		boolean hasError = loginPage.isErrorMessageVisible();
+		boolean formOpen = loginPage.isSignInButtonVisiable();
+		
+		getTest().info("Final State -> Logged in: " + loggedIn + ", Error shown: " + hasError);
+	
+	
+	   // 4. Verification Logic
+		verifyResults(expectedResult, loggedIn, hasError, formOpen, testCaseId, email, expectedErrorContains, loginPage, rememberMe,category);
+	    verifyCategorySpecifics(category, loggedIn, testCaseId);
+	}
+	
+	private void navigateToLoginPage() {
+		goHome();
+		new HomePage(page).clickSignInNavButton();
 		WaitUtil.waitForVisible(page.locator("#email").first());
-
-		// Perform login
-
-		boolean alertFired = false;
-		page.onceDialog(dialog -> {
-			getTest().fail("Unexpected dialog fired: " + dialog.message());
-			dialog.dismiss();
-		});
+	}
+	
+	private void performLoginAction(LoginPage loginPage,String email,String password,boolean rememberMe) {
 		try {
-			if (rememberMe) {
+			if(rememberMe) {
 				loginPage.loginWithRememberMe(email, password);
 			} else {
 				loginPage.login(email, password);
 			}
 		} catch (Exception e) {
-			getTest().info("Login action threw expception: " + e.getMessage());
+			getTest().info("Login action exception: " + e.getMessage());
 		}
-
+	}
+	
+	private void waitForLoginProcessToComplete() {
 		Locator loading = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Signing In..."));
 		WaitUtil.waitForHidden(loading);
-
 		WaitUtil.sleep(3000);
-
-		NavbarComponent nav = new NavbarComponent(page);
-//		boolean loggedIn = waitForLoginOutcome(loginPage,nav);
-		boolean loggedIn = nav.isLoggedIn();
-		boolean hasError = loginPage.isErrorMessageVisible();
-		boolean formOpen = loginPage.isSignInButtonVisiable();
-
-		getTest().info("Logged in : " + loggedIn);
-		getTest().info("Error shown : " + hasError);
-
-		// Assert based on expected result
+	}
+	
+	private void verifyResults(String expectedResult, boolean loggedIn, boolean hasError, boolean formOpen,
+			String id,String email,String errorHint,LoginPage loginPage, boolean rememberMe,String cat) {
 		switch (expectedResult.toUpperCase()) {
 		case "LOGIN_SUCCESS":
-			assertSuccess(loggedIn, testCaseId, email);
-			if (rememberMe)
-				assertRememberMeToken();
-			break;
+			assertSuccess(loggedIn, id, email);
+		    if (rememberMe) assertRememberMeToken();
+		    break;
 		case "LOGIN_FAIL":
-			assertFailure(loggedIn, hasError, formOpen, testCaseId, email, expectedErrorContains, loginPage);
-			break;
+			assertFailure(loggedIn, hasError, formOpen, id, email, errorHint, loginPage,cat);
+		    break;
 		default:
-			Assert.fail("Unknown ExpectedResult value in Excel: " + expectedResult);
+			  Assert.fail("Invalid ExpectedResult in Excel: " + expectedResult);
 		}
-
-		// Category-specific extra checks
-		if ("Security".equalsIgnoreCase(category)) {
+	}
+	
+	private void verifyCategorySpecifics(String category, boolean loggedIn,String id) {
+		if ("Security".equalsIgnoreCase(category)) { 
 			assertNoXssExecuted();
-			assertNotAuthenticated(loggedIn, testCaseId);
+			assertNotAuthenticated(loggedIn, id);
 		}
-
 		if ("Edge".equalsIgnoreCase(category)) {
 			assertPageStable();
 		}
 	}
+	
+	private void handleUnexpectedDialogs() {
+		page.onceDialog(dialog -> {
+			getTest().fail("Unexpected dialog: " + dialog.message());
+			dialog.dismiss();
+		});
+	}
+	
+	private void logTestMetadata(String id,String cat,String desc,String mail,boolean rem,String exp,String notes) {
+		getTest().info("_____________________________________");
+		getTest().info("TestCase: " + id + " | Category: " + cat);
+		getTest().info("Description: " + desc);
+		getTest().info("Email: " + maskIfSecurity(mail,cat) + " | RememberMe: " + rem);
+		getTest().info("Expected: " + exp);
+		if (!notes.isEmpty()) getTest().info("Notes: " + notes);
+	}
 
 	private void assertSuccess(boolean loggedIn, String id, String email) {
-		if (loggedIn) {
-			getTest().pass(" [" + id + "] Login SUCCESS as expected for: " + email);
-		} else {
+		if (!loggedIn) {
 			getTest().fail(" [" + id + "] Expected LOGIN_SUCCESS but login failed for: " + email);
 			Assert.fail("[" + id + "] Expected successful login but user is not authenticated.");
 		}
+		getTest().pass(" [" + id + "] Login SUCCESS as expected for: " + email);
 	}
 
 	private void assertFailure(boolean loggedIn, boolean hasError, boolean formOpen, String id, String email,
-			String errorHint, LoginPage loginPage) {
+			String errorHint, LoginPage loginPage,String cat) {
 		if (loggedIn) {
 			getTest().fail("[" + id + "] Expected LOGIN_FAIL but login SUCCEEDED for: " + email);
 			Assert.fail("[" + id + "] Login should have failed but user is authenticated.");
@@ -127,7 +142,7 @@ public class LoginTest extends BaseTest {
 					"[" + id + "] Error message should contain \"" + errorHint + "\" but got: \"" + errorText + "\"");
 		}
 
-		getTest().pass("[" + id + "] Login correctly rejected for: " + email);
+		getTest().pass("[" + id + "] Login correctly rejected for: " + maskIfSecurity(email, cat));
 	}
 
 	private void assertRememberMeToken() {
@@ -153,5 +168,14 @@ public class LoginTest extends BaseTest {
 		Assert.assertNotNull(url, "Page URL should not be null after edge-case input");
 		Assert.assertFalse(url.isEmpty(), "Page URL should not be empty after edge-case input");
 		getTest().info("Edge - Page stable at: " + url);
+	}
+	
+	private static String maskIfSecurity(String email,String category) {
+		if ("Security".equalsIgnoreCase(category)) {
+			return email.length() > 10 ? 
+					email.substring(0,6) + "***[payload masked]" : "***[payload masked]";
+			
+		}
+		return email;
 	}
 }
