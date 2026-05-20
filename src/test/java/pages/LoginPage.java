@@ -36,18 +36,23 @@ public class LoginPage {
 
 		emailInput = page.locator("#email").first();
 		passwordInput = page.locator("#password").first();
-		rememberMeCheckbox = page.getByLabel("Remember me", new Page.GetByLabelOptions().setExact(true));
-		SignInButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign In"));
 		
-//		errorMessage = page.locator(".error-message, [role='alert'], .toast-error").first();
 		
-		errorMessage = page.getByRole(AriaRole.LISTITEM).filter(new Locator.FilterOptions().setHasText("Invalid credentials"));
-//		errorMessage = page.getByRole(AriaRole.LISTITEM);
+//		rememberMeCheckbox = page.getByLabel("Remember me", new Page.GetByLabelOptions().setExact(true));
+//		SignInButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign In"));
+		rememberMeCheckbox = page.locator("label:has-text('Remember me') input, input[type='checkbox']");
+		SignInButton = page.locator("button:has-text('Sign In')");
 		
-		successToast = page.locator(".toast-success, .Toastify__toast--success").first();
-		resendVerificationBtn = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Resend"));
-		emptyField = page.getByText("Please fill out this field.");
 		
+		
+//		errorMessage = page.getByRole(AriaRole.LISTITEM).filter(new Locator.FilterOptions().setHasText("Invalid credentials"));		
+//		successToast = page.locator(".toast-success, .Toastify__toast--success").first();
+//		resendVerificationBtn = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Resend"));
+//		emptyField = page.getByText("Please fill out this field.");
+		this.errorMessage = page.locator("li:has-text('Invalid credentials')");
+	    this.successToast = page.locator(".toast-success, .Toastify__toast--success").first();
+	    this.resendVerificationBtn = page.locator("button:has-text('Resend')");
+	    this.emptyField = page.locator(":text('Please fill out this field.')");
 	}
 
 	/*
@@ -81,14 +86,14 @@ public class LoginPage {
 	 */
 
 	public void login(String email, String password) {
-		WaitUtil.waitForVisible(emailInput);
+//		WaitUtil.waitForVisible(emailInput);
 		enterEmail(email);
 		enterPassword(password);
 		clickSignIn();
 	}
 
 	public void loginWithRememberMe(String email, String password) {
-		WaitUtil.waitForVisible(emailInput);
+//		WaitUtil.waitForVisible(emailInput);
 		enterEmail(email);
 		enterPassword(password);
 		checkRememberMe();

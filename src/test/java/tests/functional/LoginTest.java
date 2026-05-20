@@ -102,7 +102,8 @@ public class LoginTest extends BaseTest {
 //		Locator loading = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Signing In..."));
 		Locator loading = page.locator("button:has-text('Signing In...')");
 		System.out.println("f2");
-		loading.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.HIDDEN).setTimeout(30000));
+		WaitUtil.waitForHidden(loading);
+//		loading.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.HIDDEN).setTimeout(30000));
 
 		
 		
@@ -118,9 +119,12 @@ public class LoginTest extends BaseTest {
 		if (cat.equalsIgnoreCase("Positive")) {
 			System.out.println("f4");
 			WaitUtil.waitForVisible(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Notifications")));
+//			WaitUtil.waitForVisible(page.locator("button:has-text('Notifications')"));
+//			page.locator("button:has-text('Notifications')").waitFor();
 			System.out.println("f5");
 		} else {
 			System.out.println("f6");
+//			page.locator("button:has-text('Sign In')").waitFor();
 			WaitUtil.waitForVisible(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign In")));
 			System.out.println("f7");
 		}

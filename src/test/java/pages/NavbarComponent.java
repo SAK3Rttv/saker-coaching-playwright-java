@@ -12,7 +12,8 @@ public class NavbarComponent {
 	
 	public NavbarComponent(Page page) {
 		this.page = page;
-		logInNavBtn = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login"));
+//		logInNavBtn = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login"));
+		logInNavBtn = page.locator("button:has-text('Login')");
 	}
 	
 	public boolean isLoggedIn() {
