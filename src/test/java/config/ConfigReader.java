@@ -12,7 +12,7 @@ public class ConfigReader {
 	private static final Properties props = new Properties();
 
 	static {
-		try (InputStream is = ConfigReader.class.getClassLoader().getResourceAsStream("config.properties")) {
+		try (InputStream is = ConfigReader.class.getClassLoader().getResourceAsStream("Config.properties")) {
 			if (is == null)
 				throw new RuntimeException("config.properties not found on classpath");
 			props.load(is);
