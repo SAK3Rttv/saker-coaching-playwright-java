@@ -17,7 +17,7 @@ import utils.ScreenshotUtil;
 /**
  * TestNG listener that wires ExtentReports into every test without requiring
  * BaseTest to hold ExtentTest state.
- *
+ * 
  * Test classes that need to log steps should use the static {@link #getTest()}
  * helper.
  */
@@ -29,7 +29,7 @@ public class TestListener implements ITestListener {
 	private static final Map<Long, ExtentTest> testMap = new HashMap<>();
 
 	public static ExtentTest getTest() {
-		return testMap.get(Thread.currentThread().getId());
+		return testMap.get(Thread.currentThread().threadId());
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class TestListener implements ITestListener {
 				+ result.getMethod().getMethodName();
 		ExtentTest test = extent.createTest(testName);
 		test.assignCategory(result.getTestClass().getRealClass().getSimpleName());
-		testMap.put(Thread.currentThread().getId(), test);
+		testMap.put(Thread.currentThread().threadId(), test);
 	}
 
 	@Override
