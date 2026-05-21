@@ -1,14 +1,17 @@
 package tests.functional;
 
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import base.BaseTest;
 import config.ConfigReader;
+import listeners.TestListener;
 import pages.HomePage;
 import pages.LoginPage;
 import pages.NavbarComponent;
 
+@Listeners(TestListener.class)
 public class AuthTests extends BaseTest {
 	
 	
