@@ -25,10 +25,10 @@ jobs:
         uses: actions/checkout@v4
 
       # ── 2. Set up Java 17 ────────────────────────────────
-      - name: Set up Java 25
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
+          java-version: '17'
           distribution: 'temurin'
           cache: maven           # caches ~/.m2 between runs = faster CI
 
