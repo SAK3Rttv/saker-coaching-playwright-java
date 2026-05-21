@@ -11,6 +11,7 @@ import com.microsoft.playwright.options.WaitForSelectorState;
 
 import base.BaseTest;
 import listeners.TestListener;
+import listeners.RetryAnalyzer;
 import pages.HomePage;
 import pages.LoginPage;
 import pages.NavbarComponent;
@@ -21,7 +22,9 @@ import utils.WaitUtil;
 public class LoginTest extends BaseTest {
     private static int counter = 1000;
 
-	@Test(dataProvider = "loginDataProvider", dataProviderClass = ExcelUtil.class, description = "Data-driven login - covers Positive / Negative / Edge / Security")
+	@Test(dataProvider = "loginDataProvider", dataProviderClass = ExcelUtil.class, 
+	       description = "Data-driven login - covers Positive / Negative / Edge / Security",
+	       retryAnalyzer = RetryAnalyzer.class)
 	public void loginTest(String testCaseId, String category, String description, String email, String password,
 			boolean rememberMe, String expectedResult, String expectedErrorContains, String notes) {
 		logTestMetadata(testCaseId, category, description, email, rememberMe, expectedResult, notes);

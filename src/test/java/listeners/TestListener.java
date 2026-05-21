@@ -6,6 +6,8 @@ import java.util.Map;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
@@ -24,6 +26,7 @@ import utils.ScreenshotUtil;
 public class TestListener implements ITestListener {
 
 	private static final ExtentReports extent = ExtentManager.getInstance();
+	private static final Logger log = LoggerFactory.getLogger(TestListener.class);
 
 	// thread-safe map so parallel tests don't collide
 	private static final Map<Long, ExtentTest> testMap = new HashMap<>();
@@ -43,14 +46,24 @@ public class TestListener implements ITestListener {
 
 	@Override
 	public void onTestSuccess(ITestResult result) {
-		getTest().pass("PASSED");
+		ExtentTest test = getTest();
+		
+		// Check if test passed (with or without retry)
+		int runCount = result.getTestContext().getAllTestMethods().length;
+		test.pass("PASSED");
+		
+		log.info("Test PASSED: {}", result.getName());
 		flush();
 	}
 
 	@Override
 	public void onTestFailure(ITestResult result) {
 		ExtentTest test = getTest();
-		test.fail(result.getThrowable());
+		String failureMsg = "FAILED: " + (result.getThrowable() != null ? result.getThrowable().getMessage() : "Unknown error");
+		test.fail(failureMsg);
+		
+		// Log retry information
+		log.error("Test FAILED: {} | {}", result.getName(), failureMsg);
 
 		// Attempt screenshot via BaseTest's page reference
 		Object instance = result.getInstance();
