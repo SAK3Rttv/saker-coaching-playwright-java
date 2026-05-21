@@ -27,7 +27,6 @@ public class LoginTest extends BaseTest {
 		logTestMetadata(testCaseId, category, description, email, rememberMe, expectedResult, notes);
 		System.out.println(counter++);
 		
-		
 		System.out.println("1");
 		// 1. Setup & Navigation
 		navigateToLoginPage();
