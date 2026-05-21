@@ -7,9 +7,9 @@ name: SAK3R Playwright Tests
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, master ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, develop, master ]
   workflow_dispatch:       # allows manual trigger from GitHub UI
 
 jobs:
