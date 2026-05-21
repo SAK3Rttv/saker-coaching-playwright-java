@@ -12,9 +12,9 @@
 		https://saker-coaching.vercel.app/</description>
 
 	<properties>
-	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>25</maven.compiler.source>
+		<maven.compiler.target>25</maven.compiler.target>
 		<playwright.version>1.58.0</playwright.version>
 		<testng.version>7.12.0</testng.version>
 		<extentreports.version>5.1.2</extentreports.version>
@@ -100,8 +100,9 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.15.0</version>
 				<configuration>
-					<source>11</source>
-					<target>11</target>
+					<release>25</release>
+					<source>25</source>
+					<target>25</target>
 				</configuration>
 			</plugin>
 
