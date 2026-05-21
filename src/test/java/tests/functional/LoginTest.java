@@ -1,6 +1,7 @@
 package tests.functional;
 
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.microsoft.playwright.Locator;
@@ -9,12 +10,14 @@ import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.WaitForSelectorState;
 
 import base.BaseTest;
+import listeners.TestListener;
 import pages.HomePage;
 import pages.LoginPage;
 import pages.NavbarComponent;
 import utils.ExcelUtil;
 import utils.WaitUtil;
 
+@Listeners(TestListener.class)
 public class LoginTest extends BaseTest {
     private static int counter = 1000;
 

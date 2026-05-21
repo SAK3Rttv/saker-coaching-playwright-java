@@ -77,7 +77,13 @@ public class BaseTest {
 	 * @return
 	 */
 	protected ExtentTest getTest() {
-		return TestListener.getTest();
+		ExtentTest test = TestListener.getTest();
+		if (test == null) {
+			// Fallback: no listener registered (e.g. run directly from IDE)
+			return new com.aventstack.extentreports.ExtentReports()
+					.createTest("Unregistered-" + Thread.currentThread().getName());
+		}
+		return test;
 	}
 
 	/**
