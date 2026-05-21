@@ -118,14 +118,24 @@ public class LoginTest extends BaseTest {
 		
 		if (cat.equalsIgnoreCase("Positive")) {
 			System.out.println("f4");
-			WaitUtil.waitForVisible(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Notifications")));
-//			WaitUtil.waitForVisible(page.locator("button:has-text('Notifications')"));
-//			page.locator("button:has-text('Notifications')").waitFor();
+			
+//			WaitUtil.waitForVisible(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Notifications")));
+			
+			// 1. Target the button via fast CSS
+			Locator notificationsBtn = page.locator("button[aria-label='Notifications']");
+            WaitUtil.waitForVisible(notificationsBtn);
+
+			// 2. Force Playwright to strictly wait until the element is fully VISIBLE in the viewport
+//			notificationsBtn.waitFor(new Locator.WaitForOptions()
+//			    .setState(com.microsoft.playwright.options.WaitForSelectorState.VISIBLE)
+//			    .setTimeout(15000));
 			System.out.println("f5");
 		} else {
 			System.out.println("f6");
 //			page.locator("button:has-text('Sign In')").waitFor();
-			WaitUtil.waitForVisible(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign In")));
+			Locator signIn = page.locator("button:has-text('Sign In')");
+			WaitUtil.waitForVisible(signIn);
+//			WaitUtil.waitForVisible(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign In")));
 			System.out.println("f7");
 		}
 //		WaitUtil.sleep(3000);
